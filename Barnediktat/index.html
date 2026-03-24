@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Barnediktat — Lær å skrive</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>Barnediktat</h1>
+            <p>Hør, skriv, lær</p>
+        </header>
+
+        <!-- Mode Selection -->
+        <section id="step-mode-select" class="step active">
+            <h2>Hva vil du gjøre?</h2>
+            <div class="mode-selection">
+                <div class="mode-card" data-mode="dictation">
+                    <div class="mode-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                            <line x1="12" y1="19" x2="12" y2="23"/>
+                            <line x1="8" y1="23" x2="16" y2="23"/>
+                        </svg>
+                    </div>
+                    <h3>Diktat</h3>
+                    <p>Hør og skriv</p>
+                </div>
+                <div class="mode-card" data-mode="writing">
+                    <div class="mode-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                            <path d="M2 2l7.586 7.586"/>
+                            <circle cx="11" cy="11" r="2"/>
+                        </svg>
+                    </div>
+                    <h3>Skriveøvelser</h3>
+                    <p>Øv på å skrive</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Étape 1: Sélection du texte -->
+        <section id="step-select" class="step">
+            <div class="dictee-header">
+                <button id="back-to-mode" class="btn-icon" title="Tilbake">←</button>
+                <h2>Velg diktat</h2>
+            </div>
+            <div class="difficulty-tabs">
+                <button class="tab-btn active" data-level="cp">1. klasse</button>
+                <button class="tab-btn" data-level="easy">Lett</button>
+                <button class="tab-btn" data-level="medium">Middels</button>
+                <button class="tab-btn" data-level="hard">Vanskelig</button>
+            </div>
+            <div id="texts-container" class="texts-list">
+                <!-- Les textes seront injectés ici -->
+            </div>
+        </section>
+
+        <!-- Étape 2: Lecture de la dictée -->
+        <section id="step-dictee" class="step">
+            <div class="dictee-header">
+                <button id="back-to-select" class="btn-icon" title="Tilbake">←</button>
+                <h2 id="dictee-title"></h2>
+                <span id="dictee-author" class="author"></span>
+            </div>
+            
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+
+            <div class="reading-controls">
+                <div class="voice-control">
+                    <label for="voice-select">Stemme</label>
+                    <select id="voice-select">
+                        <option value="">Laster...</option>
+                    </select>
+                    <button id="btn-test-voice" class="btn-icon-small" title="Test">♪</button>
+                </div>
+                <div class="speed-control">
+                    <label for="speed-slider">Hastighet</label>
+                    <input type="range" id="speed-slider" min="0.5" max="1.0" step="0.1" value="0.7">
+                    <span id="speed-value">0.7x</span>
+                </div>
+                <div class="pitch-control">
+                    <label for="pitch-slider">Tone</label>
+                    <input type="range" id="pitch-slider" min="0.8" max="1.3" step="0.1" value="1">
+                    <span id="pitch-value">Normal</span>
+                </div>
+                <div class="repeat-control">
+                    <label for="repeat-toggle">
+                        <input type="checkbox" id="repeat-toggle" checked>
+                        Gjenta setninger
+                    </label>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="btn-start" class="btn-primary">
+                    Start
+                </button>
+                <button id="btn-pause" class="btn-secondary hidden">
+                    Pause
+                </button>
+                <button id="btn-resume" class="btn-secondary hidden">
+                    Fortsett
+                </button>
+                <button id="btn-repeat" class="btn-secondary hidden">
+                    Gjenta
+                </button>
+                <button id="btn-next" class="btn-secondary hidden">
+                    Neste
+                </button>
+            </div>
+
+            <div id="current-sentence" class="current-sentence hidden">
+                <p class="sentence-hint">Hør og skriv</p>
+                <p id="sentence-display" class="sentence-display"></p>
+                <p class="sentence-counter">Setning <span id="current-num">1</span> av <span id="total-num">5</span></p>
+            </div>
+
+            <div class="dictation-area">
+                <div class="paper-guide">
+                    <p class="guide-text">Ta et ark og skriv det du hører</p>
+                </div>
+            </div>
+
+            <div class="step-navigation">
+                <button id="btn-finish-dictee" class="btn-success">
+                    Jeg er ferdig
+                </button>
+            </div>
+        </section>
+
+        <!-- Étape 3: Capture de la photo -->
+        <section id="step-photo" class="step">
+            <h2>Ta bilde</h2>
+            <p class="instruction">Ta et tydelig bilde av det du har skrevet</p>
+            
+            <div class="camera-container">
+                <video id="camera-video" autoplay playsinline></video>
+                <canvas id="camera-canvas" class="hidden"></canvas>
+                <img id="captured-image" class="hidden" alt="Tatt bilde">
+                
+                <div id="camera-placeholder" class="camera-placeholder">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="6" width="18" height="12" rx="2"/>
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M8 6l1.5-2h5L16 6"/>
+                    </svg>
+                    <p>Kamera</p>
+                </div>
+            </div>
+
+            <div class="photo-actions">
+                <button id="btn-activate-camera" class="btn-primary">
+                    Slå på kamera
+                </button>
+                <button id="btn-take-photo" class="btn-primary hidden">
+                    Ta bilde
+                </button>
+                <button id="btn-retake" class="btn-secondary hidden">
+                    Ta på nytt
+                </button>
+                <button id="btn-confirm-photo" class="btn-success hidden">
+                    Se resultat
+                </button>
+                <button id="btn-upload-file" class="btn-secondary">
+                    Velg fil
+                </button>
+                <input type="file" id="file-input" accept="image/*" capture="environment" class="hidden">
+            </div>
+        </section>
+
+        <!-- Étape 4: Correction -->
+        <section id="step-correction" class="step">
+            <h2>Resultat</h2>
+            
+            <div class="score-container">
+                <div class="score-circle">
+                    <span id="score-value">--</span>
+                    <span class="score-label">/ 100</span>
+                </div>
+                <p id="score-message"></p>
+            </div>
+
+            <div class="correction-details">
+                <div class="comparison-section">
+                    <h3>Originaltekst</h3>
+                    <div id="original-text" class="text-box original"></div>
+                </div>
+                
+                <div class="comparison-section">
+                    <h3>Gjenkjent tekst</h3>
+                    <div id="recognized-text" class="text-box recognized"></div>
+                    <p class="ocr-note">Gjenkjenningen kan inneholde feil</p>
+                </div>
+
+                <div class="comparison-section">
+                    <h3>Feil</h3>
+                    <div id="errors-list" class="errors-list">
+                    <!-- Les erreurs seront injectées ici -->
+                </div>
+                </div>
+            </div>
+
+            <div class="final-actions">
+                <button id="btn-new-dictee" class="btn-primary">
+                    Nytt diktat
+                </button>
+                <button id="btn-retry-same" class="btn-secondary">
+                    Prøv igjen
+                </button>
+            </div>
+        </section>
+
+        <!-- Writing Exercises Section -->
+        <section id="step-writing-menu" class="step">
+            <div class="dictee-header">
+                <button id="back-to-mode-from-writing" class="btn-icon" title="Tilbake">←</button>
+                <h2>Skriveøvelser</h2>
+            </div>
+            
+            <div class="writing-menu">
+                <div class="writing-type-card" data-type="letters">
+                    <div class="writing-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M4 7V4h16v3"/>
+                            <path d="M9 20h6"/>
+                            <path d="M12 4v16"/>
+                        </svg>
+                    </div>
+                    <h3>Alfabetet</h3>
+                    <p>Lær å skrive bokstaver</p>
+                </div>
+                
+                <div class="writing-type-card" data-type="words">
+                    <div class="writing-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M4 7V4h16v3"/>
+                            <path d="M9 20h6"/>
+                            <path d="M12 4v16"/>
+                            <path d="M8 12h8"/>
+                        </svg>
+                    </div>
+                    <h3>Ord</h3>
+                    <p>Fyll inn manglende bokstaver</p>
+                </div>
+                
+                <div class="writing-type-card" data-type="sentences">
+                    <div class="writing-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M4 7V4h16v3"/>
+                            <path d="M9 20h6"/>
+                            <path d="M12 4v16"/>
+                            <path d="M8 12h8"/>
+                            <path d="M8 16h8"/>
+                        </svg>
+                    </div>
+                    <h3>Setninger</h3>
+                    <p>Sett sammen setninger</p>
+                </div>
+                
+                <div class="writing-type-card" data-type="common-words">
+                    <div class="writing-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M4 7V4h16v3"/>
+                            <path d="M9 20h6"/>
+                            <path d="M12 4v16"/>
+                            <path d="M8 12h8"/>
+                            <path d="M8 16h8"/>
+                            <circle cx="12" cy="7" r="2"/>
+                        </svg>
+                    </div>
+                    <h3>Vanlige ord</h3>
+                    <p>Øv på de mest brukte ordene</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Letter Writing Exercise -->
+        <section id="step-writing-letters" class="step">
+            <div class="dictee-header">
+                <button id="back-to-writing-menu" class="btn-icon" title="Tilbake">←</button>
+                <h2>Alfabetet</h2>
+            </div>
+            
+            <div class="letter-exercise-container">
+                <div class="letter-display">
+                    <span id="current-letter" class="big-letter">A</span>
+                    <p id="letter-instruction">Skriv bokstaven ved å følge mønsteret</p>
+                </div>
+                
+                <div class="letter-trace-area">
+                    <canvas id="letter-canvas" width="300" height="300"></canvas>
+                    <div class="trace-guide" id="trace-guide"></div>
+                </div>
+                
+                <div class="letter-navigation">
+                    <button id="btn-prev-letter" class="btn-secondary">← Forrige</button>
+                    <span id="letter-progress">1 / 29</span>
+                    <button id="btn-next-letter" class="btn-secondary">Neste →</button>
+                </div>
+                
+                <div class="writing-actions">
+                    <button id="btn-clear-letter" class="btn-secondary">Slett</button>
+                    <button id="btn-check-letter" class="btn-primary">Sjekk</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Word Writing Exercise -->
+        <section id="step-writing-words" class="step">
+            <div class="dictee-header">
+                <button id="back-to-writing-menu-words" class="btn-icon" title="Tilbake">←</button>
+                <h2>Ord å fullføre</h2>
+            </div>
+            
+            <div class="word-exercise-container">
+                <div class="word-display">
+                    <div id="word-with-gaps" class="word-gaps">
+                        <!-- Letters with gaps will be injected here -->
+                    </div>
+                    <p id="word-hint" class="word-hint"></p>
+                </div>
+                
+                <div class="letter-choices" id="letter-choices">
+                    <!-- Letter choices will be injected here -->
+                </div>
+                
+                <div class="word-actions">
+                    <button id="btn-hint-word" class="btn-secondary">Hint</button>
+                    <button id="btn-check-word" class="btn-primary">Sjekk</button>
+                    <button id="btn-next-word" class="btn-success hidden">Neste ord</button>
+                </div>
+                
+                <div class="word-progress">
+                    <span id="word-counter">Ord 1 av 10</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sentence Writing Exercise -->
+        <section id="step-writing-sentences" class="step">
+            <div class="dictee-header">
+                <button id="back-to-writing-menu-sentences" class="btn-icon" title="Tilbake">←</button>
+                <h2>Setninger å sette sammen</h2>
+            </div>
+            
+            <div class="sentence-exercise-container">
+                <div class="sentence-audio">
+                    <button id="btn-play-sentence-audio" class="btn-icon-large">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                        </svg>
+                    </button>
+                    <p>Hør på setningen</p>
+                </div>
+                
+                <div class="sentence-words-area">
+                    <div id="sentence-slots" class="sentence-slots">
+                        <!-- Drop zones for words -->
+                    </div>
+                    
+                    <div id="word-bank" class="word-bank">
+                        <!-- Draggable words -->
+                    </div>
+                </div>
+                
+                <div class="sentence-actions">
+                    <button id="btn-reset-sentence" class="btn-secondary">Start på nytt</button>
+                    <button id="btn-check-sentence" class="btn-primary">Sjekk</button>
+                    <button id="btn-next-sentence" class="btn-success hidden">Neste setning</button>
+                </div>
+                
+                <div class="sentence-progress">
+                    <span id="sentence-counter">Setning 1 av 5</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Common Words Exercise -->
+        <section id="step-writing-common" class="step">
+            <div class="dictee-header">
+                <button id="back-to-writing-menu-common" class="btn-icon" title="Tilbake">←</button>
+                <h2>Vanlige ord</h2>
+            </div>
+            
+            <div class="common-words-container">
+                <div class="common-words-intro">
+                    <p>Øv på de 100 mest brukte ordene på norsk</p>
+                </div>
+                
+                <div class="common-word-display">
+                    <div id="common-word-show" class="common-word-show">
+                        <span id="current-common-word" class="big-word">og</span>
+                    </div>
+                    <button id="btn-play-common-word" class="btn-icon-large">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="common-word-instruction">
+                    <p>Skriv ordet for hånd:</p>
+                </div>
+                
+                <div class="common-word-write-area">
+                    <canvas id="common-word-canvas" width="400" height="200" class="common-word-canvas"></canvas>
+                    <div class="canvas-guide">
+                        <span id="guide-word" class="guide-word"></span>
+                    </div>
+                </div>
+                
+                <div class="common-word-feedback" id="common-word-feedback"></div>
+                
+                <div class="common-word-actions">
+                    <button id="btn-hint-common" class="btn-secondary">Se ordet</button>
+                    <button id="btn-check-common" class="btn-primary">Sjekk</button>
+                    <button id="btn-next-common" class="btn-success hidden">Neste ord</button>
+                </div>
+                
+                <div class="common-word-progress">
+                    <div class="progress-bar-common">
+                        <div id="common-progress-fill" class="common-progress-fill"></div>
+                    </div>
+                    <span id="common-word-counter">Ord 1 av 100</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal -->
+    <div id="hint-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">×</span>
+            <h3>Hint</h3>
+            <p id="hint-text"></p>
+        </div>
+    </div>
+
+    <script src="texts.js"></script>
+    <script src="ocr-service.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
