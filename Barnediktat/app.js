@@ -792,6 +792,7 @@ function initWritingExercises() {
     document.getElementById('btn-hint-common')?.addEventListener('click', showCommonWordHint);
     document.getElementById('btn-check-common')?.addEventListener('click', checkCommonWord);
     document.getElementById('btn-next-common')?.addEventListener('click', nextCommonWord);
+    document.getElementById('btn-erase-common')?.addEventListener('click', eraseCommonWordCanvas);
     document.getElementById('common-word-input')?.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             checkCommonWord();
@@ -1314,21 +1315,25 @@ function checkCommonWord() {
     const feedback = document.getElementById('common-word-feedback');
     const word = CommonWords[WritingState.currentCommonWordIndex];
     
-    // Sjekk om lerretet har innhold (enkel validering)
+    // Sjekk om lerretet har innhold
     const imageData = commonWordCtx.getImageData(0, 0, commonWordCanvas.width, commonWordCanvas.height);
     const hasContent = imageData.data.some(channel => channel !== 0);
     
     if (!hasContent) {
         feedback.innerHTML = '<span style="color: var(--scandi-coral); font-weight: 600;">Skriv ordet for hånd først</span>';
+        speakText('Skriv ordet for hånd først', 0.9);
         return;
     }
     
-    // Vis ordet og gi positiv tilbakemelding
-    feedback.innerHTML = '<span style="color: var(--scandi-sage); font-weight: 600;">Bra jobbet! Sjekk om du skrev riktig.</span>';
+    // Vis ordet så barnet kan sammenligne selv
     document.getElementById('current-common-word').style.visibility = 'visible';
     document.getElementById('guide-word').style.opacity = '0.4';
     document.getElementById('btn-check-common').classList.add('hidden');
     document.getElementById('btn-next-common').classList.remove('hidden');
+    
+    // Gi tilbakemelding om å sammenligne
+    feedback.innerHTML = '<span style="color: var(--scandi-terracotta); font-weight: 600;">Sammenlign med ordet over. Skrev du riktig?</span>';
+    speakText('Sammenlign med ordet over. Skrev du riktig?', 0.9);
 }
 
 function nextCommonWord() {
@@ -1338,6 +1343,17 @@ function nextCommonWord() {
     } else {
         alert('Gratulerer! Du har øvd på alle de 100 vanligste ordene!');
         goToStep('writing-menu');
+    }
+}
+
+function eraseCommonWordCanvas() {
+    if (commonWordCtx) {
+        commonWordCtx.clearRect(0, 0, commonWordCanvas.width, commonWordCanvas.height);
+    }
+    // Also clear any feedback
+    const feedback = document.getElementById('common-word-feedback');
+    if (feedback) {
+        feedback.innerHTML = '';
     }
 }
 

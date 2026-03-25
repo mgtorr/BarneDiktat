@@ -1614,15 +1614,300 @@ body {
     }
 }
 
-/* Responsive adjustments for common words */
-@media (max-width: 640px) {
+/* Responsive Design - Adapts to screen size */
+
+/* Large screens (desktops, laptops) */
+@media (min-width: 1200px) {
+    .app-container {
+        max-width: 900px;
+        padding: var(--space-xl);
+    }
+    
+    .step {
+        padding: var(--space-2xl);
+    }
+}
+
+/* Medium screens (tablets, small laptops) */
+@media (max-width: 1024px) {
+    .app-container {
+        max-width: 100%;
+        padding: var(--space-lg);
+    }
+    
+    .step {
+        padding: var(--space-xl);
+    }
+    
+    .big-letter {
+        font-size: 6rem;
+    }
+    
+    .letter-trace-area {
+        width: 250px;
+        height: 250px;
+    }
+}
+
+/* Small screens (large phones, small tablets) */
+@media (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+    
+    .app-container {
+        padding: var(--space-md);
+    }
+    
+    .app-header {
+        padding: var(--space-xl) var(--space-lg);
+        margin-bottom: var(--space-lg);
+    }
+    
+    .app-header h1 {
+        font-size: 2rem;
+    }
+    
+    .step {
+        padding: var(--space-lg);
+        border-radius: var(--radius-lg);
+    }
+    
+    .step h2 {
+        font-size: 1.25rem;
+        margin-bottom: var(--space-lg);
+    }
+    
+    .mode-selection {
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+    }
+    
+    .writing-menu {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-md);
+    }
+    
+    .big-letter {
+        font-size: 5rem;
+    }
+    
+    .letter-trace-area {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .letter-slot {
+        width: 40px;
+        height: 56px;
+        font-size: 1.5rem;
+    }
+    
+    .letter-choice {
+        width: 44px;
+        height: 44px;
+        font-size: 1.25rem;
+    }
+    
     .common-word-write-area {
         width: 100%;
         max-width: 350px;
+        height: 160px;
     }
     
     .common-word-canvas {
         width: 100%;
         height: 100%;
+    }
+}
+
+/* Extra small screens (phones) */
+@media (max-width: 480px) {
+    html {
+        font-size: 13px;
+    }
+    
+    .app-container {
+        padding: var(--space-sm);
+    }
+    
+    .app-header {
+        padding: var(--space-lg) var(--space-md);
+        margin-bottom: var(--space-md);
+    }
+    
+    .app-header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .step {
+        padding: var(--space-md);
+        border-radius: var(--radius-md);
+    }
+    
+    .difficulty-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab-btn {
+        flex: 1 1 calc(50% - var(--space-xs));
+        min-width: 80px;
+        padding: var(--space-xs) var(--space-sm);
+        font-size: 0.875rem;
+    }
+    
+    .mode-selection {
+        grid-template-columns: 1fr;
+    }
+    
+    .mode-card {
+        padding: var(--space-lg);
+    }
+    
+    .writing-menu {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+    }
+    
+    .writing-type-card {
+        padding: var(--space-md);
+    }
+    
+    .big-letter {
+        font-size: 4rem;
+    }
+    
+    .letter-trace-area {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .trace-guide {
+        font-size: 8rem;
+    }
+    
+    .letter-slot {
+        width: 36px;
+        height: 48px;
+        font-size: 1.25rem;
+    }
+    
+    .letter-choice {
+        width: 40px;
+        height: 40px;
+        font-size: 1.125rem;
+    }
+    
+    .word-slot {
+        min-width: 60px;
+        height: 40px;
+        font-size: 0.875rem;
+    }
+    
+    .draggable-word {
+        padding: var(--space-xs) var(--space-sm);
+        font-size: 0.875rem;
+    }
+    
+    .common-word-write-area {
+        max-width: 280px;
+        height: 140px;
+    }
+    
+    .guide-word {
+        font-size: 4rem;
+    }
+    
+    .big-word {
+        font-size: 2.5rem;
+    }
+    
+    .btn-primary, .btn-secondary, .btn-success {
+        padding: var(--space-sm) var(--space-md);
+        font-size: 0.875rem;
+        min-height: 44px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .action-buttons .btn-primary,
+    .action-buttons .btn-secondary,
+    .action-buttons .btn-success {
+        width: 100%;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+    html {
+        font-size: 12px;
+    }
+    
+    .writing-menu {
+        grid-template-columns: 1fr;
+    }
+    
+    .letter-slot {
+        width: 32px;
+        height: 44px;
+        font-size: 1.125rem;
+    }
+    
+    .letter-choice {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+}
+
+/* Landscape mode on phones */
+@media (max-height: 500px) and (orientation: landscape) {
+    .app-header {
+        padding: var(--space-sm) var(--space-md);
+        margin-bottom: var(--space-sm);
+    }
+    
+    .app-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .step {
+        padding: var(--space-md);
+    }
+    
+    .big-letter {
+        font-size: 3rem;
+    }
+    
+    .letter-trace-area {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .common-word-write-area {
+        height: 120px;
+    }
+}
+
+/* Touch devices */
+@media (pointer: coarse) {
+    .btn-primary, .btn-secondary, .btn-success,
+    .tab-btn, .text-card, .btn-icon, .btn-icon-small,
+    .letter-choice, .draggable-word {
+        min-height: 44px;
+    }
+    
+    .letter-slot, .word-slot {
+        min-height: 44px;
+    }
+}
+
+/* High DPI / Retina displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    canvas {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
     }
 }
